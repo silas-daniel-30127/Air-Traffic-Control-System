@@ -1,7 +1,7 @@
 package atc.API;
 
+import atc.DTO.UserDTO;
 import atc.Model.Token;
-import atc.Model.User;
 import atc.Service.UserService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -23,7 +23,7 @@ public class UserController {
     }
 
     @PostMapping("/login")
-    public Token login(@RequestBody User user) {
+    public Token login(@RequestBody UserDTO user) {
 
         if (userService.getConnection(user)) {
             token.setAccess(true);
@@ -31,43 +31,35 @@ public class UserController {
             this.token.setAccess(true);
 //            TODO: redirect to the atc controller
         } else {
+            this.token.setAccess(false);
             System.out.println("Incorrect username or password");
         }
         return token;
     }
 
-    @GetMapping("/logout")
-    public void logout() {
-        token.setAccess(false);
-        System.out.println("Good bye!");
-//        TODO: redirect to the login dialog
-
-    }
-
-
     @PostMapping(path = "/crud")
-    public void addUser(@RequestBody @NotBlank User user) {
-        userService.addUser(user);
+    public UserDTO addUser(@RequestBody @NotBlank UserDTO userDTO) {
+        return userService.addUser(userDTO);
     }
 
 
     @DeleteMapping(path = "/crud/{id}")
-    public void deleteUserById(@PathVariable int id) {
-        userService.deleteUserById(id);
+    public String deleteUserById(@PathVariable int id) {
+        return userService.deleteUserById(id);
     }
 
     @PutMapping(path = "/crud/{id}")
-    public void updateUserById(@PathVariable int id, @RequestBody User user) {
-        userService.updateUserById(id, user);
+    public UserDTO updateUserById(@PathVariable int id, @RequestBody UserDTO userDTO) {
+        return userService.updateUserById(id, userDTO);
     }
 
     @GetMapping("/crud")
-    public List<User> getUsers() {
+    public List<UserDTO> getUsers() {
         return userService.getUsers();
     }
 
     @GetMapping(path = "/crud/{id}")
-    public User getUserById(@PathVariable int id) {
+    public UserDTO getUserById(@PathVariable int id) {
         return userService.getUserById(id);
     }
 
